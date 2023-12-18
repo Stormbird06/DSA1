@@ -1,0 +1,172 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class student
+{
+public:
+    int rollno;
+    char name[10];
+    char division[5];
+    char address[15];
+
+    void accept()
+    {
+        cout << "enter roll number:";
+        cin >> rollno;
+
+        cout << "enter name:";
+        cin >> name;
+
+        cout << "enter division:";
+        cin >> division;
+
+        cout << "enter address:";
+        cin >> address;
+    }
+
+    void display1()
+    {
+        // cout << "Rollno\tName\tDivision\tAddress" << "\n";
+        cout << rollno << "\t" << name << "\t" << division << "\t" << address << "\n";
+    }
+
+    void create()
+    {
+        int n;
+        student s;
+        ofstream out("student.txt"); //opening file for writing
+        cout << "\n how many records do you want to enter:";
+        cin >> n;
+
+        for (int i = 0; i < n; i++)
+        {
+            s.accept();
+            out.write((char *)&s, sizeof(s));
+        }
+        out.close();
+    }
+
+    void search()
+    {
+        student s;
+        int n, flag = 0;
+        ifstream infile("student.txt"); //opening file for reading
+        cout << "enter rollno you want to search:\n";
+        cin >> n;
+        while (infile.read((char *)&s, sizeof(s)))
+        {
+            if (s.rollno == n)
+            {
+                cout << "record found...";
+                s.display1();
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0)
+        {
+            cout << "record not found...";
+        }
+        infile.close();
+    }
+
+    void display()
+    {
+        student s;
+        ifstream infile("student.txt");
+        while (infile.read((char *)&s, sizeof(s)))
+        {
+            s.display1();
+        }
+        infile.close();
+    }
+
+    void add_record()
+    {
+        student s;
+
+        ofstream outfile("student.txt", ios::app);
+        s.accept();
+        outfile.write((char *)&s, sizeof(s));
+        outfile.close();
+    }
+
+//     void delete_record()
+//     {
+//         student s;
+//         int n, flag = 0;
+
+//         cout << "enter the roll number u want to br deleted:";
+//         cin >> n;
+
+//         ifstream infile("student.txt"); // main File
+//         ofstream temp("temp.txt");      // temporary File
+//         while (infile.read((char *)&s, sizeof(s)))
+//         {
+//             if (s.rollno == n)
+//             {
+//                 flag = 1;
+//                 cout << "record successfully deleted...";
+//             }
+
+//             else
+//             {
+//                 temp.write((char *)&s, sizeof(s));
+//             }
+//         }
+//         infile.close();
+//         temp.close();
+
+//         remove("student.txt");
+//         rename("temp.txt", "student.txt");
+//     }
+};
+
+int main()
+{
+    student s;
+    int ch;
+
+    do
+    {
+
+        cout << "*********************************************\n";
+        cout << "1. Create data file\n";
+        cout << "2. Display records\n";
+        cout << "3. Search student according roll number;\n";
+        cout << "4.add/append record at the end of file:";
+        cout << "5. Exit.\n";
+        cout << "**********************************************\n";
+        cout << "enter ur choice:";
+        cin >> ch;
+
+        switch (ch)
+        {
+        case 1:
+            s.create();
+            break;
+
+        case 2:
+            cout << "\n rollno \tname \tdivision \t address ";
+            s.display();
+            break;
+
+        case 3:
+            s.search();
+            break;
+
+        case 4:
+            s.add_record();
+            break;
+
+        // case 5:
+        //     s.delete_record();
+        //     break;
+
+        case 5:
+            break;
+        }
+    } while (ch != 5);
+    return 0;
+}
